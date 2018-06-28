@@ -20,7 +20,6 @@ app.use((err, req, res, next) => {
   const error = {}
   error.status = err.status
   error.message = err.message
-  error.errors = err.errors
 
   res.status(error.status).json({ error })
 })
