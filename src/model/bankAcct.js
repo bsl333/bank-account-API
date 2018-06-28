@@ -140,6 +140,33 @@ const createTransaction = (id, { title, amount, pending = "true" }) => {
   return response
 }
 
+const updateTransaction = (id, txId, { title, amount, pending }) => {
+  const errors = []
+  const acct = bankData.find(acct => acct.id === id)
+  let response
+  if (acct) {
+    if (!title && !amount && !(pending.toString())) {
+      errors.push(`Invalid Request: must have at least one of the following properties in the body of request: title, amount, or pending`)
+    }
+    if (title.length > 8) {
+      errors.push(`Invalid Request: title field must be less than 9 characters`)
+    }
+    if (!errors.length) {
+      const { transactions } = acct
+      const transaction = transactions.find(transaction => transaction.id === txId)
+      transaction.title = title || transaction.title
+      transaction.amount = amount || transaction.amount
+      transaction.pending = pending || transaction.pending
+      response = transaction
+    }
+  } else {
+    errors.push(`Account with ${id} not found`)
+  }
+
+  response = errors.length ? { errors } : response
+  return response
+}
+
 module.exports = {
   getAllAccts,
   getOneAcct,
@@ -148,5 +175,6 @@ module.exports = {
   destroyAcct,
   getAllTransactions,
   getOneTransaction,
-  createTransaction
+  createTransaction,
+  updateTransaction
 }

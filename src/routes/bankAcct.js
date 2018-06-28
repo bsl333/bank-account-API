@@ -14,6 +14,7 @@ router.delete('/:id', ctrl.destroyAcct)
 router.get('/:id/transactions', ctrl.getAllTransactions)
 router.get('/:id/transactions/:txId', ctrl.getOneTransaction)
 router.post('/:id/transactions', ctrl.createTransaction)
+router.put('/:id/transactions/:txId', ctrl.updateTransaction)
 
 
 

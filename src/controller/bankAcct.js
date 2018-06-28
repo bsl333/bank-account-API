@@ -79,6 +79,17 @@ const createTransaction = (req, res, next) => {
   if (result.errors) {
     next({ status: 404, message: result.errors.join('; ') })
   } else {
+    res.status(201).json({ data: result })
+  }
+}
+
+const updateTransaction = (req, res, next) => {
+  const { id, txId } = req.params
+  const result = model.updateTransaction(id, txId, req.body)
+
+  if (result.errors) {
+    next({ status: 404, message: result.errors.join('; ') })
+  } else {
     res.json({ data: result })
   }
 }
@@ -91,5 +102,6 @@ module.exports = {
   destroyAcct,
   getAllTransactions,
   getOneTransaction,
-  createTransaction
+  createTransaction,
+  updateTransaction
 } 
