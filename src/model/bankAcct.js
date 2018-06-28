@@ -154,16 +154,37 @@ const updateTransaction = (id, txId, { title, amount, pending }) => {
     if (!errors.length) {
       const { transactions } = acct
       const transaction = transactions.find(transaction => transaction.id === txId)
-      transaction.title = title || transaction.title
-      transaction.amount = amount || transaction.amount
-      transaction.pending = pending || transaction.pending
-      response = transaction
+      if (transaction) {
+        transaction.title = title || transaction.title
+        transaction.amount = amount || transaction.amount
+        transaction.pending = pending || transaction.pending
+        response = transaction
+      } else {
+        errors.push(`Account with id ${id} does not contain transaction with id ${txId}`)
+      }
     }
   } else {
     errors.push(`Account with ${id} not found`)
   }
-
   response = errors.length ? { errors } : response
+  return response
+}
+
+const deleteTransaction = (id, txId) => {
+  const errors = []
+  const acct = bankData.find(acct => acct.id === id)
+  let response
+  if (acct) {
+    const transactionIdx = acct.transactions.findIndex(transaction => transaction.id === txId)
+    if (transactionIdx !== undefined) {
+      acct.transactions.splice(transactionIdx, 1)
+    } else {
+      errors.push(`Account with id ${id} does not contain transaction with id ${txId}`)
+    }
+  } else {
+    errors.push(`Account with id ${id} does not exist`)
+  }
+  response = errors.length ? { errors } : {}
   return response
 }
 
@@ -176,5 +197,6 @@ module.exports = {
   getAllTransactions,
   getOneTransaction,
   createTransaction,
-  updateTransaction
+  updateTransaction,
+  deleteTransaction
 }
