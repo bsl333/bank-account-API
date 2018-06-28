@@ -1,7 +1,7 @@
 const uuid = require('uuid')
 const bankData = require('../data/data')
 
-const getAll = (limit) => {
+const getAllAccts = (limit) => {
   return limit ? bankData.slice(0, limit) : bankData
 }
 
@@ -9,7 +9,7 @@ const getOneAcct = (id) => {
   const errors = []
   const account = bankData.find(acct => acct.id === id)
   let response
-  if(!account) {
+  if (!account) {
     errors.push(`Account with id ${id} not found`)
     response = { errors }
   } else {
@@ -24,11 +24,11 @@ const createAcct = ({ name, bankName, description, transactions }) => {
   let response
   if (!name) {
     errors.push(`Missing name field in request of body`)
-  } 
+  }
   if (!bankName) {
     errors.push(`Missing bankName field in request of body`)
   }
-  if(!description) {
+  if (!description) {
     errors.push(`Missing description field in request of body`)
   }
   if (!errors.length) {
@@ -38,7 +38,7 @@ const createAcct = ({ name, bankName, description, transactions }) => {
       name,
       bankName,
       description,
-      transactions 
+      transactions
     }
     bankData.push(newAcct)
     response = newAcct
@@ -78,10 +78,75 @@ const destroyAcct = (id) => {
   return errors.length ? { errors } : {}
 }
 
+const getAllTransactions = (id, limit) => {
+  const errors = []
+  const acct = bankData.find(acct => acct.id === id)
+  let response
+  if (acct) {
+    response = limit ?
+      acct.transactions.slice(0, limit) : acct.transactions
+  } else {
+    errors.push(`Account with ${id} not found`)
+    response = errors
+  }
+  return response
+}
+
+const getOneTransaction = (id, txId) => {
+  const errors = []
+  const acct = bankData.find(acct => acct.id === id)
+  let response
+  if (acct) {
+    const { transactions } = acct
+    const transaction = transactions.find(transaction => transaction.id === txId)
+    if (transaction) {
+      response = transaction
+    } else {
+      errors.push(`Account with id ${id} does not have a transaction with id ${txId}`)
+    }
+  } else {
+    errors.push(`Account with ${id} not found`)
+  }
+  response = errors.length ? { errors } : response
+  return response
+}
+
+const createTransaction = (id, { title, amount, pending = "true" }) => {
+  const errors = []
+  const acct = bankData.find(acct => acct.id === id)
+  let response
+  if (acct) {
+    if (!title || title.length > 8) {
+      errors.push(`Missing title field in body of request OR length of title field less than 9 characters`)
+    }
+    if (!amount) {
+      errors.push(`Missing amount field in body of request`)
+    }
+    if (!errors.length) {
+      const { transactions } = acct
+      const transaction = {
+        id: uuid(),
+        title,
+        amount,
+        pending
+      }
+      response = transaction
+      transactions.push(transaction)
+    }
+  } else {
+    errors.push(`Account with ${id} not found`)
+  }
+  response = errors.length ? { errors } : response
+  return response
+}
+
 module.exports = {
-  getAll,
+  getAllAccts,
   getOneAcct,
   createAcct,
   updateAcct,
-  destroyAcct
+  destroyAcct,
+  getAllTransactions,
+  getOneTransaction,
+  createTransaction
 }
