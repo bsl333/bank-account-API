@@ -145,10 +145,10 @@ const updateTransaction = (id, txId, { title, amount, pending }) => {
   const acct = bankData.find(acct => acct.id === id)
   let response
   if (acct) {
-    if (!title && !amount && !(pending.toString())) {
+    if (!title && !amount && !pending) {
       errors.push(`Invalid Request: must have at least one of the following properties in the body of request: title, amount, or pending`)
     }
-    if (title.length > 8) {
+    if (title && title.length > 8) {
       errors.push(`Invalid Request: title field must be less than 9 characters`)
     }
     if (!errors.length) {
