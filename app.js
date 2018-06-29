@@ -24,4 +24,8 @@ app.use((err, req, res, next) => {
   res.status(error.status).json({ error })
 })
 
-app.listen(port, () => console.log(`On port ${port}`))
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(port, () => console.log(`On port ${port}`))
+}
+
+module.exports = app
