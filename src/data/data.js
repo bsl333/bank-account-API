@@ -16,18 +16,18 @@ module.exports = [{
   }]
 }, {
   id: "2",
-  name: "Branden",
-  bankName: "Wells Fargo",
-  description: "Checking Account",
+  name: "Sean",
+  bankName: "Chase",
+  description: "Savings",
   transactions: [{
     id: "a",
-    title: "Amazon",
-    amount: 100,
+    title: "Grocery",
+    amount: 120,
     pending: false
   }, {
     id: "b",
-    title: "CVS",
-    amount: 10,
+    title: "Bills",
+    amount: 200,
     pending: true
   }]
 }]
